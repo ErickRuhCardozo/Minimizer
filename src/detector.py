@@ -2,8 +2,8 @@ import re
 import cv2
 import time
 import pickle
-import webbrowser
 import pygetwindow
+from datetime import datetime
 from threading import Thread, Event
 
 
@@ -41,6 +41,9 @@ class Minimizer(Thread):
 
 
 def main():
+    with open('log.txt', 'a', encoding='utf-8') as f:
+        f.write(f'Autenticação Requisitada: {datetime.strftime(datetime.now(), '%d/%m/%Y - %H:%I')}\n')
+
     classifier = cv2.CascadeClassifier('haarcascades/haarcascade_frontalface_alt2.xml')
     recognizer = cv2.face.LBPHFaceRecognizer_create()
     recognizer.read('trained.yml')
@@ -85,6 +88,10 @@ def main():
 
         if conf_frame_count > 10:
             minimizer_event.set()
+
+            with open('log.txt', 'a', encoding='utf-8') as f:
+                f.write(f'Autenticação Feita ({last_label}): {datetime.strftime(datetime.now(), '%d/%m/%Y - %H:%I')}\n{'-' * 45}\n')
+
             break
 
     minimizer.join() # Is this really necessary?
